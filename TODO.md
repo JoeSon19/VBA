@@ -1,21 +1,25 @@
 # VBA Todo
 
 ## Goal
-- Create a VBA macro to find formulas that reference another worksheet/tab.
-- If the formula result is a number, replace the formula with its current value.
+- Create a VBA macro to find formulas using `XLOOKUP`, `VLOOKUP`, or `SUMIFS`.
+- Replace each matching formula with its current calculated value.
 
 ## Todo
 - [x] Decide scope: active sheet only or entire workbook. → Both (two macros, matching existing repo pattern).
-- [x] Find cells with formulas using `SpecialCells(xlCellTypeFormulas)`.
-- [x] Detect formulas that reference another tab/worksheet.
-- [x] Check whether the evaluated result is numeric.
-- [x] Convert matching formulas to values with `cell.Value = cell.Value`.
-- [x] Skip formulas that return text, blanks, or errors.
+- [x] Find formula cells with `SpecialCells(xlCellTypeFormulas)`.
+- [x] Detect formulas that contain `XLOOKUP(`, `VLOOKUP(`, or `SUMIFS(`.
+- [x] Make the formula-name check case-insensitive.
+- [x] Skip cells that are already constants.
+- [x] Replace matching formulas with values using `cell.Value = cell.Value`.
 - [x] Count how many cells were converted.
 - [x] Show a completion message with the total converted count.
-- [ ] Test with formulas that reference the same sheet to confirm they are not changed.
-- [ ] Test with formulas from other tabs that return numbers to confirm they are hardcoded.
+- [ ] Test `XLOOKUP` formulas and confirm they become values.
+- [ ] Test `VLOOKUP` formulas and confirm they become values.
+- [ ] Test `SUMIFS` formulas and confirm they become values.
+- [ ] Test non-matching formulas such as `IF`, `SUM`, and `INDEX/MATCH` to confirm they are not changed.
+- [x] Decide how to handle formulas returning errors. → Skipped via `IsError` check.
 
 ## Notes
-- Likely formula pattern to detect: sheet references such as `Sheet2!A1`.
-- Existing macros in this repo already use a similar hardcode-to-value pattern.
+- A simple detection approach is `InStr(1, cell.Formula, "XLOOKUP(", vbTextCompare)`.
+- Do the same check for `VLOOKUP(` and `SUMIFS(`.
+- Existing modules in this repo already use the `cell.Value = cell.Value` hardcode pattern.
